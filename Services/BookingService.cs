@@ -12,18 +12,20 @@ public class BookingService : IBookingService
 
     public BookingService(AppDbContext db) => _db = db;
 
-    public async Task<BookingDto> CreateBookingAsync(Guid userId, CreateBookingRequest request)
+    public async Task<BookingDto> CreateBookingAsync(CreateBookingRequest request)
     {
-        var user = await _db.Users.FindAsync(userId)
-            ?? throw new KeyNotFoundException("User not found");
+        var referenceCode = $"SOP-{DateTime.UtcNow:yyyyMMdd}-{Random.Shared.Next(1000, 9999)}";
 
         var booking = new Booking
         {
-            UserId = userId,
+            CustomerName = request.CustomerName,
+            CustomerEmail = request.CustomerEmail,
+            CustomerPhone = request.CustomerPhone,
+            ReferenceCode = referenceCode,
             Date = DateTime.SpecifyKind(DateTime.Parse(request.Date).Date, DateTimeKind.Utc),
             TotalAmount = request.TotalAmount,
             Status = "pending",
-            PaymentMethod = request.PaymentMethod,
+            PaymentMethod = "cash",
             Notes = request.Notes,
             CreatedAt = DateTime.UtcNow,
             Slots = request.Slots.Select(s => new TimeSlot
@@ -35,51 +37,21 @@ public class BookingService : IBookingService
         };
 
         _db.Bookings.Add(booking);
-        user.BookingsCount++;
         await _db.SaveChangesAsync();
 
         return MapToDto(booking);
     }
 
-    public async Task<List<BookingDto>> GetUserBookingsAsync(Guid userId) =>
+    public async Task<BookingDto?> TrackBookingAsync(string referenceCode, string email) =>
         await _db.Bookings
-            .Where(b => b.UserId == userId)
+            .Where(b => b.ReferenceCode == referenceCode && b.CustomerEmail == email)
             .Include(b => b.Slots)
-            .Include(b => b.User)
-            .OrderByDescending(b => b.Date)
             .Select(b => MapToDto(b))
-            .ToListAsync();
-
-    public async Task<BookingDto> GetBookingByIdAsync(Guid id)
-    {
-        var booking = await _db.Bookings
-            .Include(b => b.Slots)
-            .Include(b => b.User)
-            .FirstOrDefaultAsync(b => b.Id == id)
-            ?? throw new KeyNotFoundException("Booking not found");
-        return MapToDto(booking);
-    }
-
-    public async Task<BookingDto> CancelBookingAsync(Guid id, Guid userId)
-    {
-        var booking = await _db.Bookings
-            .Include(b => b.Slots)
-            .Include(b => b.User)
-            .FirstOrDefaultAsync(b => b.Id == id)
-            ?? throw new KeyNotFoundException("Booking not found");
-
-        if (booking.UserId != userId)
-            throw new UnauthorizedAccessException("Cannot cancel another user's booking");
-
-        booking.Status = "cancelled";
-        await _db.SaveChangesAsync();
-        return MapToDto(booking);
-    }
+            .FirstOrDefaultAsync();
 
     public async Task<List<BookingDto>> GetAllBookingsAsync() =>
         await _db.Bookings
             .Include(b => b.Slots)
-            .Include(b => b.User)
             .OrderByDescending(b => b.Date)
             .Select(b => MapToDto(b))
             .ToListAsync();
@@ -88,7 +60,6 @@ public class BookingService : IBookingService
     {
         var booking = await _db.Bookings
             .Include(b => b.Slots)
-            .Include(b => b.User)
             .FirstOrDefaultAsync(b => b.Id == id)
             ?? throw new KeyNotFoundException("Booking not found");
 
@@ -99,9 +70,10 @@ public class BookingService : IBookingService
 
     private static BookingDto MapToDto(Booking b) => new(
         b.Id.ToString(),
-        b.UserId.ToString(),
-        b.User.Name,
-        b.User.Email,
+        b.CustomerName,
+        b.CustomerEmail,
+        b.CustomerPhone,
+        b.ReferenceCode,
         b.Date.ToString("yyyy-MM-dd"),
         b.Slots.Select(s => new TimeSlotDto(
             s.Id.ToString(),

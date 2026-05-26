@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PickleballBookingSystem.DTOs;
 using PickleballBookingSystem.Interfaces;
@@ -13,34 +12,32 @@ public class BookingController : ControllerBase
 
     public BookingController(IBookingService booking) => _booking = booking;
 
-    [Authorize, HttpPost]
+    [HttpPost]
     public async Task<ActionResult<BookingDto>> Create(CreateBookingRequest request)
     {
-        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var booking = await _booking.CreateBookingAsync(userId, request);
-        return CreatedAtAction(nameof(GetById), new { id = booking.Id }, booking);
+        var booking = await _booking.CreateBookingAsync(request);
+        return CreatedAtAction(nameof(Track), new { referenceCode = booking.ReferenceCode }, booking);
     }
 
-    [Authorize, HttpGet("user")]
-    public async Task<ActionResult<List<BookingDto>>> GetUserBookings()
+    [HttpGet("track/{referenceCode}")]
+    public async Task<ActionResult<BookingDto>> Track(string referenceCode, [FromQuery] string email)
     {
-        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var bookings = await _booking.GetUserBookingsAsync(userId);
-        return Ok(bookings);
-    }
-
-    [Authorize, HttpGet("{id}")]
-    public async Task<ActionResult<BookingDto>> GetById(Guid id)
-    {
-        var booking = await _booking.GetBookingByIdAsync(id);
+        var booking = await _booking.TrackBookingAsync(referenceCode, email);
+        if (booking == null) return NotFound(new { message = "Booking not found" });
         return Ok(booking);
     }
 
-    [Authorize, HttpPut("{id}/cancel")]
-    public async Task<ActionResult<BookingDto>> Cancel(Guid id)
+    [Authorize(Roles = "admin"), HttpGet("admin")]
+    public async Task<ActionResult<List<BookingDto>>> GetAll()
     {
-        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var booking = await _booking.CancelBookingAsync(id, userId);
+        var bookings = await _booking.GetAllBookingsAsync();
+        return Ok(bookings);
+    }
+
+    [Authorize(Roles = "admin"), HttpPut("admin/{id}")]
+    public async Task<ActionResult<BookingDto>> AdminUpdate(Guid id, AdminUpdateBookingRequest request)
+    {
+        var booking = await _booking.AdminUpdateBookingAsync(id, request);
         return Ok(booking);
     }
 }

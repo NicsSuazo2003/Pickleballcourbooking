@@ -10,8 +10,13 @@ namespace PickleballBookingSystem.Controllers;
 public class AdminController : ControllerBase
 {
     private readonly IAdminService _admin;
+    private readonly IBookingService _booking;
 
-    public AdminController(IAdminService admin) => _admin = admin;
+    public AdminController(IAdminService admin, IBookingService booking)
+    {
+        _admin = admin;
+        _booking = booking;
+    }
 
     [HttpGet("analytics")]
     public async Task<ActionResult<AnalyticsDto>> GetAnalytics()
@@ -23,28 +28,14 @@ public class AdminController : ControllerBase
     [HttpGet("bookings")]
     public async Task<ActionResult<List<BookingDto>>> GetBookings()
     {
-        var bookings = await _admin.GetAllBookingsAsync();
+        var bookings = await _booking.GetAllBookingsAsync();
         return Ok(bookings);
     }
 
     [HttpPut("bookings/{id}")]
     public async Task<ActionResult<BookingDto>> UpdateBooking(Guid id, AdminUpdateBookingRequest request)
     {
-        var booking = await _admin.UpdateBookingAsync(id, request);
+        var booking = await _booking.AdminUpdateBookingAsync(id, request);
         return Ok(booking);
-    }
-
-    [HttpGet("users")]
-    public async Task<ActionResult<List<UserDto>>> GetUsers()
-    {
-        var users = await _admin.GetUsersAsync();
-        return Ok(users);
-    }
-
-    [HttpPut("users/{id}")]
-    public async Task<ActionResult<UserDto>> UpdateUser(Guid id, AdminUpdateUserRequest request)
-    {
-        var user = await _admin.UpdateUserAsync(id, request);
-        return Ok(user);
     }
 }

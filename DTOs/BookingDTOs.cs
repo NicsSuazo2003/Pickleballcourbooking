@@ -1,10 +1,12 @@
 ﻿namespace PickleballBookingSystem.DTOs;
 
 public record CreateBookingRequest(
+    string CustomerName,
+    string CustomerEmail,
+    string? CustomerPhone,
     string Date,
     List<SlotRequest> Slots,
     decimal TotalAmount,
-    string PaymentMethod,
     string? Notes
 );
 
@@ -12,9 +14,10 @@ public record SlotRequest(string StartTime, string EndTime);
 
 public record BookingDto(
     string Id,
-    string UserId,
-    string UserName,
-    string UserEmail,
+    string CustomerName,
+    string CustomerEmail,
+    string? CustomerPhone,
+    string ReferenceCode,
     string Date,
     List<TimeSlotDto> Slots,
     decimal TotalAmount,
@@ -33,3 +36,5 @@ public record TimeSlotDto(
 );
 
 public record AdminUpdateBookingRequest(string Status);
+
+public record TrackBookingRequest(string ReferenceCode, string Email);

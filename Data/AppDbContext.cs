@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using PickleballBookingSystem.Entities;
-using System.Reflection.Emit;
 
 namespace PickleballBookingSystem.Data;
 
@@ -16,7 +15,6 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Add this block at the TOP, before your entity configs
         foreach (var entity in modelBuilder.Model.GetEntityTypes())
         {
             entity.SetTableName(entity.GetTableName()!.ToLower());
@@ -29,11 +27,6 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Booking>(e =>
         {
-            e.HasOne(b => b.User)
-                .WithMany(u => u.Bookings)
-                .HasForeignKey(b => b.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             e.HasMany(b => b.Slots)
                 .WithOne(s => s.Booking)
                 .HasForeignKey(s => s.BookingId)
