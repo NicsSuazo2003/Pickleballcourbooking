@@ -60,13 +60,16 @@ public class BookingService : IBookingService
         _db.Bookings.Add(booking);
         await _db.SaveChangesAsync();
 
-        // Notify admin (fire and forget)
+        // Notify admin
         var timeDisplay = $"{request.Slots.First().StartTime}–{request.Slots.Last().EndTime}";
-        _ = Task.Run(async () =>
+        try
         {
-            try { await _email.NotifyAdminNewBookingAsync(request.CustomerName, referenceCode, request.Date, timeDisplay, $"₱{request.TotalAmount}"); }
-            catch { }
-        });
+            await _email.NotifyAdminNewBookingAsync(request.CustomerName, referenceCode, request.Date, timeDisplay, $"₱{request.TotalAmount}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Email notification failed: {ex.Message}");
+        }
 
         return MapToDto(booking);
     }
