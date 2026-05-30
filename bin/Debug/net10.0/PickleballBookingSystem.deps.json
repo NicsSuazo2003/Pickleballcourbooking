@@ -13,6 +13,7 @@
           "Microsoft.AspNetCore.OpenApi": "10.0.6",
           "Microsoft.EntityFrameworkCore.Design": "10.0.8",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "10.0.1",
+          "Supabase.Storage": "2.4.1",
           "Swashbuckle.AspNetCore": "10.1.7"
         },
         "runtime": {
@@ -24,6 +25,14 @@
           "lib/net10.0/BCrypt-Net-Next.dll": {
             "assemblyVersion": "4.2.0.0",
             "fileVersion": "4.2.0.0"
+          }
+        }
+      },
+      "BirdMessenger/3.1.4": {
+        "runtime": {
+          "lib/net8.0/BirdMessenger.dll": {
+            "assemblyVersion": "3.1.4.0",
+            "fileVersion": "3.1.4.0"
           }
         }
       },
@@ -474,6 +483,14 @@
           }
         }
       },
+      "MimeMapping/3.0.1": {
+        "runtime": {
+          "lib/netstandard2.0/MimeMapping.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.0.1.0"
+          }
+        }
+      },
       "Mono.TextTemplating/3.0.0": {
         "dependencies": {
           "System.CodeDom": "6.0.0"
@@ -511,6 +528,28 @@
           "lib/net10.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll": {
             "assemblyVersion": "10.0.1.0",
             "fileVersion": "10.0.1.0"
+          }
+        }
+      },
+      "Supabase.Core/1.0.0": {
+        "runtime": {
+          "lib/netstandard2.0/Supabase.Core.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Supabase.Storage/2.4.1": {
+        "dependencies": {
+          "BirdMessenger": "3.1.4",
+          "MimeMapping": "3.0.1",
+          "Newtonsoft.Json": "13.0.3",
+          "Supabase.Core": "1.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Supabase.Storage.dll": {
+            "assemblyVersion": "2.4.1.0",
+            "fileVersion": "2.4.1.0"
           }
         }
       },
@@ -645,6 +684,13 @@
       "sha512": "sha512-gwLD2KfCuwQesP17aVh4h6lpiMPEVt5Lbpndo0ej903hNUUTtyxt3ARdDjmuydBRTAUICc7OVKVbaOvc6SQYXA==",
       "path": "bcrypt.net-next/4.2.0",
       "hashPath": "bcrypt.net-next.4.2.0.nupkg.sha512"
+    },
+    "BirdMessenger/3.1.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-OkVRhxErBUC8n+nSdiHet8RAawrA3G2vaBAT1oiCm7BohbvgydfhPfatj4TEwPgE0ia/yI+6BMgQO9u8VcJE/g==",
+      "path": "birdmessenger/3.1.4",
+      "hashPath": "birdmessenger.3.1.4.nupkg.sha512"
     },
     "Humanizer.Core/2.14.1": {
       "type": "package",
@@ -800,6 +846,13 @@
       "path": "microsoft.visualstudio.solutionpersistence/1.0.52",
       "hashPath": "microsoft.visualstudio.solutionpersistence.1.0.52.nupkg.sha512"
     },
+    "MimeMapping/3.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lhYcUVnWKaqrboAwi05YLCx3wdluM9Sr1Mv5Emhgc8c8yNVvdiSEnQJMdDvgb4grlYTaOmbnhYaezoeateX95w==",
+      "path": "mimemapping/3.0.1",
+      "hashPath": "mimemapping.3.0.1.nupkg.sha512"
+    },
     "Mono.TextTemplating/3.0.0": {
       "type": "package",
       "serviceable": true,
@@ -827,6 +880,20 @@
       "sha512": "sha512-P6EwH0Q4xkaA264iNZDqCPhWt8pscfUGxXazDQg4noBfqjoOlk4hKWfvBjF9ZX3R/9JybRmmJfmxr2iBMj0EpA==",
       "path": "npgsql.entityframeworkcore.postgresql/10.0.1",
       "hashPath": "npgsql.entityframeworkcore.postgresql.10.0.1.nupkg.sha512"
+    },
+    "Supabase.Core/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fJK3Kfq1alw53AGWHBr+dhPu+BUR5dKuBjGhcxrFRVdsFFFWSD5iPIdTYi0CUQDA2b1OjGudYL1xd51yp4hU9Q==",
+      "path": "supabase.core/1.0.0",
+      "hashPath": "supabase.core.1.0.0.nupkg.sha512"
+    },
+    "Supabase.Storage/2.4.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nCb4tOVxBWB8LCM1ZW8RYU94bGKpTs87K/AvBboCPHq4pp3QBoyPziax0SWSaj3Df8M2cfbbsmQAu8qms8+uDg==",
+      "path": "supabase.storage/2.4.1",
+      "hashPath": "supabase.storage.2.4.1.nupkg.sha512"
     },
     "Swashbuckle.AspNetCore/10.1.7": {
       "type": "package",
